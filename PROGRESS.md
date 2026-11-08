@@ -114,3 +114,11 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
 - 2026-11-08: npm: owner created npm org `ingotkit` (misspelled `ingokit` deleted) and
   published the placeholder from `setup/npm-placeholder/`. Registry lists `ingotkit` with
   maintainer `uzairmirza`; 0.0.1 is `latest` (live 10:09 UTC after npm's processing step). IPO Pakistan search still to do, so the "Name checked" box stays open.
+- 2026-11-08: Hostinger open-source partners program is waitlist-only for now. Owner joined
+  the waitlist with github.com/IngotKit/ingotkit (Hostinger's repo check passed after a
+  GitHub web 504 glitch). Paid add-on question for Hostinger support still open.
+- 2026-11-08: Trademark: IPO search is a paid form (TM 55, PKR 1,000 per class; TM 01 filing
+  PKR 3,000 and TM 11 registration PKR 9,000 per class, per the IPO portal). Owner asked a
+  trademark agent to run the INGOTKIT search (classes 9 and 42); result pending.
+- 2026-11-08: GitHub OAuth app "IngotKit (local dev)" registered in the IngotKit org; client
+  ID and secret are in `.env.local` (format checked). Google OAuth not set up yet.
