@@ -111,3 +111,7 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
   Phase 1 gate verified: `npm run dev` page checked by Playwright, CI green on `main`.
   CI actions bumped to checkout@v7 / setup-node@v7 (Node 24 runtime) after a Node 20
   deprecation warning.
+- 2026-11-08: npm: owner created npm org `ingotkit` (misspelled `ingokit` deleted) and
+  published the placeholder from `setup/npm-placeholder/`. Registry lists `ingotkit` with
+  maintainer `uzairmirza`; version 0.0.1 was still processing (only `0.0.0-stage` visible)
+  at last check. IPO Pakistan search still to do, so the "Name checked" box stays open.

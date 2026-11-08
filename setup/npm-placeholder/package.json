@@ -1,0 +1,16 @@
+{
+  "name": "ingotkit",
+  "version": "0.0.1",
+  "description": "Open-source AI SaaS starter for flat-rate Hostinger hosting. Work in progress; see the GitHub repo.",
+  "keywords": ["nextjs", "saas-starter", "ai", "mysql", "hostinger", "boilerplate"],
+  "homepage": "https://ingotkit.com",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/IngotKit/ingotkit.git"
+  },
+  "bugs": {
+    "url": "https://github.com/IngotKit/ingotkit/issues"
+  },
+  "license": "MIT",
+  "files": ["README.md", "LICENSE"]
+}
