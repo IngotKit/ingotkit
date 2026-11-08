@@ -64,9 +64,11 @@ jobs:
 
       - name: Test settings
         run: |
+          secret="$(openssl rand -base64 32)"
+          echo "::add-mask::$secret"
           {
             echo "DATABASE_URL=mysql://ingotkit:ingotkit@127.0.0.1:3306/ingotkit"
-            echo "BETTER_AUTH_SECRET=$(openssl rand -base64 32)"
+            echo "BETTER_AUTH_SECRET=$secret"
             echo "SMTP_HOST=127.0.0.1"
             echo "SMTP_PORT=1025"
             echo "EMAIL_FROM=IngotKit CI <ci@localhost>"

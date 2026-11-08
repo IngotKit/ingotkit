@@ -135,3 +135,6 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
 - Phase 6 note: Better Auth reads the client IP from `X-Forwarded-For` and only trusts a
   single value. If Hostinger's proxy sends a chain, rate limiting falls back to one shared
   bucket per path; set `advanced.ipAddress.trustedProxies` after checking Hostinger's headers.
+- 2026-11-08: PR #1 CI failed: a build made with no settings prerendered /dashboard with
+  "signed out" baked in (getSession checked env before reading the request). Fixed by
+  reading headers first; `npm run e2e` now builds with blank settings like CI.
