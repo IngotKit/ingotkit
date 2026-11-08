@@ -1,25 +1,48 @@
 // Zod-validated environment. Never throws, at import time or later: it reports which keys
 // are missing or invalid so the app can render /setup instead of crashing.
-// When you add a variable: add it here, to .env.example, and (from Phase 2) to /setup.
+// When you add a variable: add it here and to .env.example. /setup reads this file.
 import { z } from "zod";
 
-export type Feature = "core" | "auth" | "email" | "billing" | "ai" | "media" | "storage" | "jobs";
+export type Feature =
+  | "core"
+  | "email"
+  | "google"
+  | "github"
+  | "billing"
+  | "ai"
+  | "media"
+  | "storage"
+  | "jobs";
 
-export const FEATURE_LABELS: Record<Feature, string> = {
-  core: "Core (required to run)",
-  auth: "Social sign-in",
-  email: "Email (SMTP)",
-  billing: "Payments",
-  ai: "Text AI",
-  media: "Image and video AI",
-  storage: "Media storage (S3 / R2)",
-  jobs: "Background jobs (cron)",
+export const FEATURES: Record<Feature, { label: string; enables: string }> = {
+  core: {
+    label: "Core",
+    enables: "Required. The app shows this setup page until these are set.",
+  },
+  email: {
+    label: "Email (SMTP)",
+    enables: "Email verification, sign-in links and password reset. Without it, only Google/GitHub sign-in works.",
+  },
+  google: { label: "Google sign-in", enables: 'The "Continue with Google" button.' },
+  github: { label: "GitHub sign-in", enables: 'The "Continue with GitHub" button.' },
+  billing: { label: "Payments", enables: "Buying credit packs and the monthly plan." },
+  ai: { label: "Text AI", enables: "The AI chat tool." },
+  media: { label: "Image and video AI", enables: "The image and video tools (Higgsfield)." },
+  storage: {
+    label: "Media storage (S3 / R2)",
+    enables: "Keeps generated media permanently. Without it, provider URLs are stored and may expire.",
+  },
+  jobs: { label: "Background jobs (cron)", enables: "The /api/cron/* routes that hPanel cron calls." },
 };
 
 type VarSpec = {
   feature: Feature;
   /** Core vars block the app. The rest only switch their feature on or off. */
   required: boolean;
+  /** Not needed for its feature to work (e.g. SMTP login on a server without auth). */
+  optionalInFeature?: boolean;
+  /** Safe to show on /setup (non-secret). Secrets are only ever reported as set/missing. */
+  public?: boolean;
   schema: z.ZodType<string>;
   /** Where to get the value; shown on /setup. */
   help: string;
@@ -38,6 +61,7 @@ export const ENV_VARS = {
   APP_URL: {
     feature: "core",
     required: true,
+    public: true,
     schema: url,
     help: "Public URL of the app, e.g. https://yourdomain.com (http://localhost:3000 locally).",
   },
@@ -48,16 +72,16 @@ export const ENV_VARS = {
     help: "Any random string of 32+ characters: run `openssl rand -base64 32`.",
   },
 
-  GOOGLE_CLIENT_ID: { feature: "auth", required: false, schema: nonEmpty, help: "Google Cloud Console → APIs & Services → Credentials." },
-  GOOGLE_CLIENT_SECRET: { feature: "auth", required: false, schema: nonEmpty, help: "Same OAuth client as GOOGLE_CLIENT_ID." },
-  GITHUB_CLIENT_ID: { feature: "auth", required: false, schema: nonEmpty, help: "GitHub → Settings → Developer settings → OAuth Apps." },
-  GITHUB_CLIENT_SECRET: { feature: "auth", required: false, schema: nonEmpty, help: "Same OAuth app as GITHUB_CLIENT_ID." },
+  SMTP_HOST: { feature: "email", required: false, public: true, schema: nonEmpty, help: "hPanel → Emails → your mailbox → connect apps (smtp.hostinger.com). Locally: 127.0.0.1 (Mailpit)." },
+  SMTP_PORT: { feature: "email", required: false, public: true, schema: z.string().regex(/^\d+$/, "must be a port number"), help: "465 (SSL) or 587 (STARTTLS) on Hostinger. Locally: 1025 (Mailpit)." },
+  SMTP_USER: { feature: "email", required: false, optionalInFeature: true, public: true, schema: nonEmpty, help: "The mailbox address. Leave empty for Mailpit." },
+  SMTP_PASSWORD: { feature: "email", required: false, optionalInFeature: true, schema: nonEmpty, help: "The mailbox password. Leave empty for Mailpit." },
+  EMAIL_FROM: { feature: "email", required: false, public: true, schema: nonEmpty, help: 'Sender, e.g. "IngotKit <hello@yourdomain.com>".' },
 
-  SMTP_HOST: { feature: "email", required: false, schema: nonEmpty, help: "hPanel → Emails → your mailbox → connect apps (e.g. smtp.hostinger.com)." },
-  SMTP_PORT: { feature: "email", required: false, schema: z.string().regex(/^\d+$/, "must be a port number"), help: "Usually 465 (SSL) or 587 (STARTTLS)." },
-  SMTP_USER: { feature: "email", required: false, schema: nonEmpty, help: "The mailbox address." },
-  SMTP_PASSWORD: { feature: "email", required: false, schema: nonEmpty, help: "The mailbox password." },
-  EMAIL_FROM: { feature: "email", required: false, schema: nonEmpty, help: 'Sender, e.g. "IngotKit <hello@yourdomain.com>".' },
+  GOOGLE_CLIENT_ID: { feature: "google", required: false, public: true, schema: nonEmpty, help: "Google Cloud Console → Google Auth Platform → Clients. Redirect URI: <APP_URL>/api/auth/callback/google" },
+  GOOGLE_CLIENT_SECRET: { feature: "google", required: false, schema: nonEmpty, help: "Same OAuth client as GOOGLE_CLIENT_ID." },
+  GITHUB_CLIENT_ID: { feature: "github", required: false, public: true, schema: nonEmpty, help: "GitHub → Settings → Developer settings → OAuth Apps. Callback URL: <APP_URL>/api/auth/callback/github" },
+  GITHUB_CLIENT_SECRET: { feature: "github", required: false, schema: nonEmpty, help: "Same OAuth app as GITHUB_CLIENT_ID." },
 
   STRIPE_SECRET_KEY: { feature: "billing", required: false, schema: z.string().regex(/^sk_/, "must start with sk_"), help: "Stripe Dashboard → Developers → API keys." },
   STRIPE_WEBHOOK_SECRET: { feature: "billing", required: false, schema: z.string().regex(/^whsec_/, "must start with whsec_"), help: "Stripe Dashboard → Developers → Webhooks → your endpoint." },
@@ -68,11 +92,11 @@ export const ENV_VARS = {
   HIGGSFIELD_API_KEY_ID: { feature: "media", required: false, schema: nonEmpty, help: "Higgsfield dashboard → API keys (key ID)." },
   HIGGSFIELD_API_KEY_SECRET: { feature: "media", required: false, schema: nonEmpty, help: "Higgsfield dashboard → API keys (key secret)." },
 
-  S3_ENDPOINT: { feature: "storage", required: false, schema: url, help: "Cloudflare R2 → bucket → S3 API endpoint." },
-  S3_BUCKET: { feature: "storage", required: false, schema: nonEmpty, help: "Bucket name." },
+  S3_ENDPOINT: { feature: "storage", required: false, public: true, schema: url, help: "Cloudflare R2 → bucket → S3 API endpoint." },
+  S3_BUCKET: { feature: "storage", required: false, public: true, schema: nonEmpty, help: "Bucket name." },
   S3_ACCESS_KEY_ID: { feature: "storage", required: false, schema: nonEmpty, help: "R2 → Manage API tokens." },
   S3_SECRET_ACCESS_KEY: { feature: "storage", required: false, schema: nonEmpty, help: "R2 → Manage API tokens." },
-  S3_PUBLIC_URL: { feature: "storage", required: false, schema: url, help: "Public bucket URL or custom domain." },
+  S3_PUBLIC_URL: { feature: "storage", required: false, public: true, schema: url, help: "Public bucket URL or custom domain." },
 
   CRON_SECRET: { feature: "jobs", required: false, schema: z.string().min(16, "must be at least 16 characters"), help: "Any random string; hPanel cron sends it to /api/cron/*." },
 } as const satisfies Record<string, VarSpec>;
@@ -94,7 +118,11 @@ export type EnvReport = {
 
 type EnvSource = Record<string, string | undefined>;
 
-const ENV_KEYS = Object.keys(ENV_VARS) as EnvKey[];
+export const ENV_KEYS = Object.keys(ENV_VARS) as EnvKey[];
+
+export function getVarSpec(key: EnvKey): VarSpec {
+  return ENV_VARS[key];
+}
 
 export function readEnv(source: EnvSource = process.env): EnvReport {
   const values: Env = {};
@@ -102,7 +130,7 @@ export function readEnv(source: EnvSource = process.env): EnvReport {
   const invalid: InvalidEnvIssue[] = [];
 
   for (const key of ENV_KEYS) {
-    const spec: VarSpec = ENV_VARS[key];
+    const spec = getVarSpec(key);
     const issue: EnvIssue = { key, feature: spec.feature, required: spec.required, help: spec.help };
     const raw = source[key]?.trim();
 
@@ -127,9 +155,19 @@ export function getEnv(): Env {
   return readEnv().values;
 }
 
-/** Whether every variable of a feature is present and valid. */
+export function featureKeys(feature: Feature): EnvKey[] {
+  return ENV_KEYS.filter((key) => getVarSpec(key).feature === feature);
+}
+
+/**
+ * A feature is ready when every variable it needs is present and valid, and no optional
+ * variable of it is set to an invalid value.
+ */
 export function isFeatureReady(feature: Feature, report: EnvReport = readEnv()): boolean {
-  return ENV_KEYS.filter((key) => ENV_VARS[key].feature === feature).every(
-    (key) => report.values[key] !== undefined,
-  );
+  return featureKeys(feature).every((key) => {
+    const spec = getVarSpec(key);
+    if (report.values[key] !== undefined) return true;
+    const isInvalid = report.invalid.some((issue) => issue.key === key);
+    return spec.optionalInFeature === true && !isInvalid;
+  });
 }

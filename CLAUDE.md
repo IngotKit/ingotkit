@@ -79,8 +79,10 @@ src/
 ## Commands (created in Phase 1)
 - `npm run dev` · `npm run build` · `npm run lint` · `npm run typecheck`
 - `npm run db:generate` · `npm run db:migrate` · `npm run db:seed`
-- `npm test` (Vitest) · `npm run e2e` (Playwright)
-- Local MySQL: `docker compose -f docker/dev.yml up -d`
+- `npm test` (Vitest) · `npm run e2e` (production build + Playwright; needs Docker services)
+- `npm run auth:schema` regenerates `src/db/schema/auth.ts` after changing Better Auth plugins;
+  then `npm run db:generate`
+- Local MySQL + Mailpit inbox (http://localhost:8025): `docker compose -f docker/dev.yml up -d`
 
 ## Definition of done (every task)
 1. `npm run typecheck`, `npm run lint`, `npm test` pass.

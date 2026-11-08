@@ -21,11 +21,11 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
 - [x] **Gate:** `npm run dev` shows a page; CI green on `main`
 
 ## Phase 2 — Setup page + auth (~2 days, weeks 1–2)
-- [ ] `/setup` lists missing env vars by feature, with where to get each
-- [ ] Middleware redirects to `/setup` when core vars are missing
+- [x] `/setup` lists missing env vars by feature, with where to get each
+- [x] Middleware (Next 16 `proxy.ts`) redirects to `/setup` when core vars are missing
 - [ ] Better Auth: email/password + verification, magic link, Google, GitHub
-- [ ] Nodemailer SMTP adapter
-- [ ] Schema, migrations, e2e test for signup
+- [x] Nodemailer SMTP adapter
+- [x] Schema, migrations, e2e test for signup
 - [ ] **Gate:** fresh clone with no env shows `/setup`; with env, sign up + verify + log in work
 
 ## Payments check (by 2026-11-20)
@@ -122,3 +122,16 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
   trademark agent to run the INGOTKIT search (classes 9 and 42); result pending.
 - 2026-11-08: GitHub OAuth app "IngotKit (local dev)" registered in the IngotKit org; client
   ID and secret are in `.env.local` (format checked). Google OAuth not set up yet.
+- 2026-11-08: Phase 2 built on branch `phase-2-auth`: /setup (per-feature status, DB and
+  migration check, secrets never shown), `src/proxy.ts` redirects, Better Auth 1.7.18 on
+  MySQL via Drizzle (email/password with required verification, password reset, magic
+  link, Google and GitHub when their keys exist, MySQL-backed rate limiting), Nodemailer
+  SMTP adapter with console fallback in dev, Mailpit in docker/dev.yml, migration
+  `0000_auth`. Verified locally: typecheck, lint, 26 unit tests, 8 Playwright tests on a
+  production build (no-env server shows /setup and the auth API returns 503; sign-up then
+  email confirmation then sign-out then sign-in; magic link; password reset; /setup hidden
+  when configured). Not yet verified: Google and GitHub sign-in (manual, needs a real
+  account), SMTP against a real Hostinger mailbox, CI run with the new services.
+- Phase 6 note: Better Auth reads the client IP from `X-Forwarded-For` and only trusts a
+  single value. If Hostinger's proxy sends a chain, rate limiting falls back to one shared
+  bucket per path; set `advanced.ipAddress.trustedProxies` after checking Hostinger's headers.
