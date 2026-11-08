@@ -80,13 +80,14 @@ src/
 - `npm run dev` · `npm run build` · `npm run lint` · `npm run typecheck`
 - `npm run db:generate` · `npm run db:migrate` · `npm run db:seed`
 - `npm test` (Vitest) · `npm run e2e` (production build + Playwright; needs Docker services)
+- `npm run billing:sync` creates/updates the packs and plan in Polar or Stripe from `site.config.ts`
 - `npm run auth:schema` regenerates `src/db/schema/auth.ts` after changing Better Auth plugins;
   then `npm run db:generate`
 - Local MySQL + Mailpit inbox (http://localhost:8025): `docker compose -f docker/dev.yml up -d`
 
 ## Definition of done (every task)
 1. `npm run typecheck`, `npm run lint`, `npm test` pass.
-2. The signup → buy credits (Stripe test mode) → generate → see in gallery path still
+2. The signup → buy credits (Polar sandbox) → generate → see in gallery path still
    works (`npm run e2e`) — once that path exists.
 3. `.env.example`, `/setup`, and docs updated if behaviour or config changed.
 4. Nothing assumes Postgres, Redis, Vercel-only APIs, or an always-on process.

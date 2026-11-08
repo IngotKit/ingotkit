@@ -54,9 +54,6 @@ jobs:
       - name: Lint
         run: npm run lint
 
-      - name: Unit tests
-        run: npm test
-
       # Proves the app builds with no env vars at all (it must boot to /setup, never crash).
       # Settings are read at request time, so the e2e steps below reuse this build.
       - name: Build without env
@@ -76,6 +73,10 @@ jobs:
 
       - name: Migrate database
         run: npm run db:migrate
+
+      # Unit tests plus the integration tests that need MySQL (credits ledger, webhooks).
+      - name: Unit and integration tests
+        run: npm test
 
       - name: Install Playwright browser
         run: npx playwright install --with-deps chromium

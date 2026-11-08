@@ -99,8 +99,10 @@ API use. Marketing Studio *video* isn't available via API; Marketing Studio Imag
 Gate: `npm run e2e` passes signup → buy → generate → gallery.
 > Add the gallery (list, download, delete; optional R2 upload), the admin area (users,
 > credit adjustments, failed jobs, revenue), and the landing and pricing pages driven by
-> site.config.ts. Write the end-to-end Playwright test for the full money path using Stripe
-> test mode and a mocked media provider.
+> site.config.ts. Write the end-to-end Playwright test for the full money path using Polar
+> sandbox (or signed test webhooks) and a mocked media provider.
+> (Changed 2026-11-08: the owner can't open a Stripe account from Pakistan; Stripe stays
+> supported and unit-tested.)
 
 ### Phase 6 — Hostinger hardening (~2 days)
 Gate: someone else deploys a fresh fork on a Business plan in under 15 minutes using only the README.

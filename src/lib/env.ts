@@ -8,7 +8,8 @@ export type Feature =
   | "email"
   | "google"
   | "github"
-  | "billing"
+  | "polar"
+  | "stripe"
   | "ai"
   | "media"
   | "storage"
@@ -25,7 +26,14 @@ export const FEATURES: Record<Feature, { label: string; enables: string }> = {
   },
   google: { label: "Google sign-in", enables: 'The "Continue with Google" button.' },
   github: { label: "GitHub sign-in", enables: 'The "Continue with GitHub" button.' },
-  billing: { label: "Payments", enables: "Buying credit packs and the monthly plan." },
+  polar: {
+    label: "Payments: Polar",
+    enables: "Credit packs and the monthly plan, with Polar as merchant of record (handles tax; pays out in many countries, including Pakistan).",
+  },
+  stripe: {
+    label: "Payments: Stripe",
+    enables: "Credit packs and the monthly plan through Stripe (for sellers in Stripe-supported countries).",
+  },
   ai: { label: "Text AI", enables: "The AI chat tool." },
   media: { label: "Image and video AI", enables: "The image and video tools (Higgsfield)." },
   storage: {
@@ -83,8 +91,12 @@ export const ENV_VARS = {
   GITHUB_CLIENT_ID: { feature: "github", required: false, public: true, schema: nonEmpty, help: "GitHub → Settings → Developer settings → OAuth Apps. Callback URL: <APP_URL>/api/auth/callback/github" },
   GITHUB_CLIENT_SECRET: { feature: "github", required: false, schema: nonEmpty, help: "Same OAuth app as GITHUB_CLIENT_ID." },
 
-  STRIPE_SECRET_KEY: { feature: "billing", required: false, schema: z.string().regex(/^sk_/, "must start with sk_"), help: "Stripe Dashboard → Developers → API keys." },
-  STRIPE_WEBHOOK_SECRET: { feature: "billing", required: false, schema: z.string().regex(/^whsec_/, "must start with whsec_"), help: "Stripe Dashboard → Developers → Webhooks → your endpoint." },
+  POLAR_ACCESS_TOKEN: { feature: "polar", required: false, schema: z.string().regex(/^polar_/, "must start with polar_"), help: "Polar → Settings → Developers → New token (sandbox.polar.sh for test mode). Scopes: products, checkouts, customer sessions." },
+  POLAR_WEBHOOK_SECRET: { feature: "polar", required: false, schema: nonEmpty, help: "Polar → Settings → Webhooks → add endpoint <APP_URL>/api/webhooks/polar (format: Standard Webhooks) → copy the secret." },
+  POLAR_SERVER: { feature: "polar", required: false, optionalInFeature: true, public: true, schema: z.enum(["sandbox", "production"], "must be sandbox or production"), help: "sandbox (test payments, default) or production (real money). Tokens differ per environment." },
+
+  STRIPE_SECRET_KEY: { feature: "stripe", required: false, schema: z.string().regex(/^sk_/, "must start with sk_"), help: "Stripe Dashboard → Developers → API keys." },
+  STRIPE_WEBHOOK_SECRET: { feature: "stripe", required: false, schema: z.string().regex(/^whsec_/, "must start with whsec_"), help: "Stripe Dashboard → Developers → Webhooks → endpoint <APP_URL>/api/webhooks/stripe. Events: checkout.session.completed, invoice.paid." },
 
   ANTHROPIC_API_KEY: { feature: "ai", required: false, schema: nonEmpty, help: "console.anthropic.com → API keys." },
   OPENAI_API_KEY: { feature: "ai", required: false, schema: nonEmpty, help: "platform.openai.com → API keys." },

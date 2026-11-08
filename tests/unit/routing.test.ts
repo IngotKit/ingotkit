@@ -37,6 +37,10 @@ describe("decideRoute", () => {
     expect(decideRoute({ ...base, pathname: "/dashboards" })).toEqual({ type: "next" });
   });
 
+  it("protects /billing too", () => {
+    expect(decideRoute({ ...base, pathname: "/billing" })).toEqual({ type: "redirect", to: "/sign-in?next=%2Fbilling" });
+  });
+
   it("lets visitors with a session cookie through", () => {
     expect(decideRoute({ ...base, pathname: "/dashboard", hasSessionCookie: true })).toEqual({ type: "next" });
   });
