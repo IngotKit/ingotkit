@@ -23,7 +23,7 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
 ## Phase 2 — Setup page + auth (~2 days, weeks 1–2)
 - [x] `/setup` lists missing env vars by feature, with where to get each
 - [x] Middleware (Next 16 `proxy.ts`) redirects to `/setup` when core vars are missing
-- [ ] Better Auth: email/password + verification, magic link, Google, GitHub
+- [x] Better Auth: email/password + verification, magic link, Google, GitHub
 - [x] Nodemailer SMTP adapter
 - [x] Schema, migrations, e2e test for signup
 - [x] **Gate:** fresh clone with no env shows `/setup`; with env, sign up + verify + log in work
@@ -143,3 +143,6 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
   GitHub locally (port 3001, since port 3000 is used by another project); the database has
   the GitHub-linked account with a verified email. The "Better Auth" item stays open until
   Google sign-in is checked (Google OAuth keys not set up yet).
+- 2026-11-08: Google sign-in verified by the owner locally (Google Cloud project "IngotKit
+  Dev", consent screen in Testing with the owner as test user). Google and GitHub are linked
+  to the same user by verified email, as configured. All Phase 2 items are done.
