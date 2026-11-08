@@ -14,9 +14,30 @@ concurrency:
 
 jobs:
   check:
-    name: Typecheck, lint, test
+    name: Typecheck, lint, test, e2e
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 20
+
+    # Same services as docker/dev.yml: MySQL 8 and a Mailpit inbox for auth emails.
+    services:
+      mysql:
+        image: mysql:8.4
+        env:
+          MYSQL_DATABASE: ingotkit
+          MYSQL_USER: ingotkit
+          MYSQL_PASSWORD: ingotkit
+          MYSQL_ROOT_PASSWORD: ingotkit-root
+        ports:
+          - 3306:3306
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uingotkit -pingotkit"
+          --health-interval=5s --health-timeout=5s --health-retries=20
+      mailpit:
+        image: axllent/mailpit:v1.33
+        ports:
+          - 1025:1025
+          - 8025:8025
+
     steps:
       - uses: actions/checkout@v7
 
@@ -37,5 +58,35 @@ jobs:
         run: npm test
 
       # Proves the app builds with no env vars at all (it must boot to /setup, never crash).
+      # Settings are read at request time, so the e2e steps below reuse this build.
       - name: Build without env
         run: npm run build
+
+      - name: Test settings
+        run: |
+          secret="$(openssl rand -base64 32)"
+          echo "::add-mask::$secret"
+          {
+            echo "DATABASE_URL=mysql://ingotkit:ingotkit@127.0.0.1:3306/ingotkit"
+            echo "BETTER_AUTH_SECRET=$secret"
+            echo "SMTP_HOST=127.0.0.1"
+            echo "SMTP_PORT=1025"
+            echo "EMAIL_FROM=IngotKit CI <ci@localhost>"
+          } >> "$GITHUB_ENV"
+
+      - name: Migrate database
+        run: npm run db:migrate
+
+      - name: Install Playwright browser
+        run: npx playwright install --with-deps chromium
+
+      - name: End-to-end tests
+        run: npx playwright test
+
+      - name: Upload Playwright traces
+        if: failure()
+        uses: actions/upload-artifact@v7
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7

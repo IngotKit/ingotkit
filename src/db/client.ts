@@ -27,6 +27,7 @@ export function getDb(): Db {
   const pool = mysql.createPool({
     uri: url,
     connectionLimit: 5,
+    connectTimeout: 5_000,
     // Hostinger stops idle apps; keep the pool small and let idle connections close.
     maxIdle: 2,
     idleTimeout: 60_000,
