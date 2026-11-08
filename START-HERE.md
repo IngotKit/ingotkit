@@ -1,4 +1,4 @@
-# Start here — ForgeKit
+# Start here — IngotKit
 
 This folder is a ready-to-go Claude Code project. Claude Code reads `CLAUDE.md`
 automatically and tracks its own progress in `PROGRESS.md`.
@@ -31,7 +31,7 @@ these from this folder instead of cloning:
 
 ```bash
 git init -b main
-gh repo create <your-org>/forgekit --public --source . --remote origin \
+gh repo create IngotKit/ingotkit --public --source . --remote origin \
   --description "Open-source AI SaaS starter for flat-rate Hostinger hosting"
 git add . && git commit -m "Project brief and plan" && git push -u origin main
 ```

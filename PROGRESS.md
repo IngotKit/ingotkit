@@ -1,4 +1,4 @@
-# PROGRESS — ForgeKit
+# PROGRESS — IngotKit
 
 Claude Code: update this file at the end of every task. Tick boxes, add dated notes under
 "Log". Never tick a gate unless you have actually verified it.
@@ -9,16 +9,16 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
 - [ ] Accounts: Claude Pro/Max, GitHub org, Hostinger partner program
 - [x] Tools: Git, Node 24 (`.node-version` is set), Docker, GitHub CLI, Claude Code
 - [ ] Name checked (GitHub org, npm, domain, IPO Pakistan trademark search)
-- [ ] GitHub repo created from this folder and pushed
+- [x] GitHub repo created from this folder and pushed
 
 ## Phase 1 — Scaffold (~1 day, week 1)
 - [x] Next.js 16 + TS strict + Tailwind v4 + shadcn/ui
 - [x] Drizzle + mysql2, `docker/dev.yml` with MySQL 8
 - [x] Vitest + Playwright set up
 - [x] `src/config/site.config.ts` and `src/lib/env.ts` (never throws on import)
-- [ ] GitHub Actions: typecheck, lint, test
+- [x] GitHub Actions: typecheck, lint, test
 - [x] Verify Better Auth MySQL support; Polar / Lemon Squeezy payouts to Pakistan (note below)
-- [ ] **Gate:** `npm run dev` shows a page; CI green on `main`
+- [x] **Gate:** `npm run dev` shows a page; CI green on `main`
 
 ## Phase 2 — Setup page + auth (~2 days, weeks 1–2)
 - [ ] `/setup` lists missing env vars by feature, with where to get each
@@ -101,3 +101,13 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
   when DATABASE_URL is missing; `db:generate` and `db:migrate` run. `npm audit --omit=dev`
   clean. CI workflow written (`.github/workflows/ci.yml`, Node from `.node-version`) but not
   yet run on GitHub, so the CI item and the gate stay open until the repo exists.
+- 2026-11-08: Name chosen: IngotKit. GitHub org `IngotKit` created by owner (I am admin);
+  `ingotkit` was free on npm, .com and .dev; owner bought ingotkit.com. npm name not yet
+  claimed; IPO Pakistan search for "IngotKit" still to do. Renamed ForgeKit to IngotKit in
+  code, config and docs (folder name unchanged).
+- 2026-11-08: Repos: public https://github.com/IngotKit/ingotkit (pushed by owner; Issues,
+  Discussions, topics, homepage set) and private, empty IngotKit/ingotkit-pro. MIT LICENSE
+  added. CI run 42450991232 green on `main` (typecheck, lint, test, build without env).
+  Phase 1 gate verified: `npm run dev` page checked by Playwright, CI green on `main`.
+  CI actions bumped to checkout@v7 / setup-node@v7 (Node 24 runtime) after a Node 20
+  deprecation warning.

@@ -33,7 +33,7 @@ export const ENV_VARS = {
     feature: "core",
     required: true,
     schema: z.string().regex(/^mysql:\/\//, "must start with mysql://"),
-    help: "hPanel → Databases → MySQL. Locally: mysql://forgekit:forgekit@127.0.0.1:3306/forgekit",
+    help: "hPanel → Databases → MySQL. Locally: mysql://ingotkit:ingotkit@127.0.0.1:3306/ingotkit",
   },
   APP_URL: {
     feature: "core",
@@ -57,7 +57,7 @@ export const ENV_VARS = {
   SMTP_PORT: { feature: "email", required: false, schema: z.string().regex(/^\d+$/, "must be a port number"), help: "Usually 465 (SSL) or 587 (STARTTLS)." },
   SMTP_USER: { feature: "email", required: false, schema: nonEmpty, help: "The mailbox address." },
   SMTP_PASSWORD: { feature: "email", required: false, schema: nonEmpty, help: "The mailbox password." },
-  EMAIL_FROM: { feature: "email", required: false, schema: nonEmpty, help: 'Sender, e.g. "ForgeKit <hello@yourdomain.com>".' },
+  EMAIL_FROM: { feature: "email", required: false, schema: nonEmpty, help: 'Sender, e.g. "IngotKit <hello@yourdomain.com>".' },
 
   STRIPE_SECRET_KEY: { feature: "billing", required: false, schema: z.string().regex(/^sk_/, "must start with sk_"), help: "Stripe Dashboard → Developers → API keys." },
   STRIPE_WEBHOOK_SECRET: { feature: "billing", required: false, schema: z.string().regex(/^whsec_/, "must start with whsec_"), help: "Stripe Dashboard → Developers → Webhooks → your endpoint." },

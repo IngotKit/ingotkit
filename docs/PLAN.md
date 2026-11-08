@@ -1,4 +1,4 @@
-# ForgeKit — Plan
+# IngotKit — Plan
 
 Copied from the planning doc (https://claude.ai/artifact/UJU6TxTAmRjXDqwDs4N2Zw) on 2026-11-08.
 This file is the source of truth for Claude Code; edit it here if the plan changes.
@@ -13,7 +13,7 @@ Postgres/Supabase, which Hostinger Web apps plans don't offer — that's the wed
 - **For:** indie hackers, vibe coders using Claude Code or Cursor, freelancers building
   AI tools for clients.
 - **How it earns:** the README's Deploy on Hostinger button carries a partner code;
-  20% of the plan each referred user buys. Later: ForgeKit Pro (see PRO-ROADMAP.md).
+  20% of the plan each referred user buys. Later: IngotKit Pro (see PRO-ROADMAP.md).
 - **90-day goals:** 1,000+ stars, partner listing approved, steady tracked deploys.
 
 ## Tech stack
@@ -117,6 +117,6 @@ Gate: someone else deploys a fresh fork on a Business plan in under 15 minutes u
 - Higgsfield assets: README hero clip (fork → deploy → first paid generation), three 9:16
   launch clips, demo gallery media, Product Hunt set.
 - Sequence: soft launch with 5–10 builders → public launch week (Show HN, Product Hunt,
-  r/SideProject, r/nextjs, Indie Hackers, X) → weekly "built with ForgeKit" showcase and
+  r/SideProject, r/nextjs, Indie Hackers, X) → weekly "built with IngotKit" showcase and
   new example tools → SEO docs pages.
 - Weekly numbers: stars, forks, deploys and paying users (partner dashboard).

@@ -35,14 +35,14 @@ brew.sh first.
 2. From this folder (it already holds the plan), create the public repo and push:
    ```bash
    git init -b main
-   gh repo create <org>/forgekit --public --source . --remote origin \
+   gh repo create IngotKit/ingotkit --public --source . --remote origin \
      --description "Open-source AI SaaS starter for flat-rate Hostinger hosting"
    git add . && git commit -m "Project brief and plan" && git push -u origin main
    ```
    Then on GitHub: add an MIT license file (or ask Claude Code to add `LICENSE`).
 3. Create the private Pro repo now and leave it empty:
    ```bash
-   gh repo create <org>/forgekit-pro --private --description "ForgeKit Pro (commercial license)"
+   gh repo create IngotKit/ingotkit-pro --private --description "IngotKit Pro (commercial license)"
    ```
 4. Repo settings: turn on Issues and Discussions; topics `nextjs`, `saas-starter`, `ai`,
    `mysql`, `hostinger`, `boilerplate`.
@@ -96,7 +96,7 @@ on GitHub Actions while you build alone; rerun later for `@claude` replies and P
       PKR 3,000/class to file, PKR 9,000 to register — confirm on the IPO site)
 
 **When Pro launches (later)**
-- [ ] Polar organization + GitHub Repository Access benefit for `forgekit-pro` (read-only)
+- [ ] Polar organization + GitHub Repository Access benefit for `ingotkit-pro` (read-only)
 
 ## 8. Daily loop
 1. Branch for the task: `git switch -c phase-3-ledger`.

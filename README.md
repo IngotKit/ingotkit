@@ -1,4 +1,4 @@
-# ForgeKit (working name)
+# IngotKit
 
 Open-source AI SaaS starter for flat-rate Hostinger hosting: auth, credits, payments and
 AI image/video generation on Next.js + MySQL. **Work in progress — not ready to deploy yet.**

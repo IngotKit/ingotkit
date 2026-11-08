@@ -16,7 +16,7 @@ Researched 2026-11-06. Re-check anything marked "check" before relying on it.
 - Docker/VPS variant (for a future `docker-compose.yml`):
   `https://www.hostinger.com/docker-hosting?compose_url=<raw compose url>&REFERRALCODE=<code>`
   https://www.hostinger.com/support/deploy-on-hostinger-button
-- Open question: are paid add-ons (ForgeKit Pro) allowed beside a listed project? Ask Hostinger.
+- Open question: are paid add-ons (IngotKit Pro) allowed beside a listed project? Ask Hostinger.
 
 ## Web apps (Node.js) hosting — what the kit must respect
 | Constraint | Source |

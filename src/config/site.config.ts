@@ -35,14 +35,14 @@ export type SiteConfig = {
 };
 
 export const siteConfig: SiteConfig = {
-  name: "ForgeKit",
+  name: "IngotKit",
   tagline: "Launch a paid AI app on flat-rate hosting this weekend.",
   description:
     "Auth, credits, payments and AI image and video generation, already wired up. Built for Next.js and MySQL on Hostinger.",
   supportEmail: "support@example.com",
   links: {
-    github: "https://github.com/your-org/forgekit",
-    docs: "https://github.com/your-org/forgekit#readme",
+    github: "https://github.com/IngotKit/ingotkit",
+    docs: "https://github.com/IngotKit/ingotkit#readme",
   },
   currency: "usd",
   signupCredits: 20,

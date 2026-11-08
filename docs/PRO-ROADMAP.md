@@ -17,7 +17,7 @@ mid-February 2027).
 Rule of thumb: if a solo builder needs it to take their first payment, it stays free.
 
 ## Do now, during v1
-- [ ] Pro lives in a separate private repo (`<org>/forgekit-pro`), attaching only through
+- [ ] Pro lives in a separate private repo (`IngotKit/ingotkit-pro`), attaching only through
       the tool registry and provider interfaces (rule already in CLAUDE.md).
 - [ ] CLA bot before accepting outside pull requests.
 - [ ] Check the name, then consider registering it as a trademark.

@@ -3,7 +3,7 @@ import { describe, expect, it } from "vitest";
 import { ENV_VARS, isFeatureReady, readEnv } from "@/lib/env";
 
 const validCore = {
-  DATABASE_URL: "mysql://user:pass@127.0.0.1:3306/forgekit",
+  DATABASE_URL: "mysql://user:pass@127.0.0.1:3306/ingotkit",
   APP_URL: "http://localhost:3000",
   BETTER_AUTH_SECRET: "x".repeat(32),
 };

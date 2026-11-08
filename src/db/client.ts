@@ -9,7 +9,7 @@ export type Db = MySql2Database<typeof schema>;
 
 // Reuse one pool per process (and across dev hot reloads). Nothing connects at import time:
 // the pool is created on the first getDb() call, so a missing DATABASE_URL never crashes boot.
-const globalForDb = globalThis as unknown as { forgekitDb?: Db; forgekitPool?: mysql.Pool };
+const globalForDb = globalThis as unknown as { ingotkitDb?: Db; ingotkitPool?: mysql.Pool };
 
 export class DatabaseNotConfiguredError extends Error {
   constructor() {
@@ -19,7 +19,7 @@ export class DatabaseNotConfiguredError extends Error {
 }
 
 export function getDb(): Db {
-  if (globalForDb.forgekitDb) return globalForDb.forgekitDb;
+  if (globalForDb.ingotkitDb) return globalForDb.ingotkitDb;
 
   const url = getEnv().DATABASE_URL;
   if (!url) throw new DatabaseNotConfiguredError();
@@ -34,14 +34,14 @@ export function getDb(): Db {
   });
 
   const db = drizzle({ client: pool, schema, mode: "default" });
-  globalForDb.forgekitPool = pool;
-  globalForDb.forgekitDb = db;
+  globalForDb.ingotkitPool = pool;
+  globalForDb.ingotkitDb = db;
   return db;
 }
 
 // For scripts (seed, tests) that must exit cleanly.
 export async function closeDb(): Promise<void> {
-  await globalForDb.forgekitPool?.end();
-  globalForDb.forgekitPool = undefined;
-  globalForDb.forgekitDb = undefined;
+  await globalForDb.ingotkitPool?.end();
+  globalForDb.ingotkitPool = undefined;
+  globalForDb.ingotkitDb = undefined;
 }

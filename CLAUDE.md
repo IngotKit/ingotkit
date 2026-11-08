@@ -1,6 +1,6 @@
-# CLAUDE.md — ForgeKit (AI SaaS starter for Hostinger Web apps)
+# CLAUDE.md — IngotKit (AI SaaS starter for Hostinger Web apps)
 
-> Working name: ForgeKit. Check GitHub, npm and the domain before committing to it.
+> Name: IngotKit. GitHub org `IngotKit` (public repo `ingotkit`, private `ingotkit-pro`), domain ingotkit.com.
 
 ## How to work in this folder (read first, every session)
 1. Read `PROGRESS.md` — it says which phase we're in and what's done.
