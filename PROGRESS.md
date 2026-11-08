@@ -26,7 +26,7 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
 - [ ] Better Auth: email/password + verification, magic link, Google, GitHub
 - [x] Nodemailer SMTP adapter
 - [x] Schema, migrations, e2e test for signup
-- [ ] **Gate:** fresh clone with no env shows `/setup`; with env, sign up + verify + log in work
+- [x] **Gate:** fresh clone with no env shows `/setup`; with env, sign up + verify + log in work
 
 ## Payments check (by 2026-11-20)
 - [ ] Decide which provider can onboard you and pay out in Pakistan (Stripe? Polar? Lemon Squeezy?)
@@ -138,3 +138,8 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
 - 2026-11-08: PR #1 CI failed: a build made with no settings prerendered /dashboard with
   "signed out" baked in (getSession checked env before reading the request). Fixed by
   reading headers first; `npm run e2e` now builds with blank settings like CI.
+- 2026-11-08: Phase 2 gate verified. CI green on PR #1 (no-env server shows /setup; sign up,
+  email verification, sign out, sign in; magic link; password reset). Owner signed in with
+  GitHub locally (port 3001, since port 3000 is used by another project); the database has
+  the GitHub-linked account with a verified email. The "Better Auth" item stays open until
+  Google sign-in is checked (Google OAuth keys not set up yet).
