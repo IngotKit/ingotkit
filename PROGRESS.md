@@ -29,7 +29,7 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
 - [x] **Gate:** fresh clone with no env shows `/setup`; with env, sign up + verify + log in work
 
 ## Payments check (by 2026-11-20)
-- [ ] Decide which provider can onboard you and pay out in Pakistan (Stripe? Polar? Lemon Squeezy?)
+- [x] Decide which provider can onboard you and pay out in Pakistan (Stripe? Polar? Lemon Squeezy?)
 - [ ] If Stripe can't onboard you: build the merchant-of-record adapter first in Phase 3
 
 ## Phase 3 — Billing + credits ledger (~3 days, weeks 2–4)
@@ -146,3 +146,19 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
 - 2026-11-08: Google sign-in verified by the owner locally (Google Cloud project "IngotKit
   Dev", consent screen in Testing with the owner as test user). Google and GitHub are linked
   to the same user by verified email, as configured. All Phase 2 items are done.
+- 2026-11-08: Polar onboarding (owner): org `ingotkit`, Individual, USD pricing. Polar's
+  automated product check rejected the Pro description: "image and video generation
+  features ... are not allowed" (even as code using the buyer's own API keys). Polar's
+  written AUP (effective 2026-10-01) lists "AI Content Generation tools (text, image,
+  video, voice)" as restricted / closer review, not banned; the form allows continuing to
+  manual review. Lemon Squeezy's published prohibited list has no AI-generation ban but
+  prohibits "business-in-a-box" and services; Pakistan bank payouts need Stripe
+  pre-approval. Paddle reportedly bans AI image generators (secondary source, unverified).
+  Pakistan payout check on Polar still pending.
+- 2026-11-08: Payments decision: Polar. Owner's Polar payout account (Stripe Connect
+  Express) shows "PK · PKR, Ready": Polar can pay out to Pakistan, in PKR (balance held in
+  USD, converted on withdrawal; minimum withdrawal $10). Stripe direct is not available to
+  Pakistani merchants, so Phase 3 builds the merchant-of-record (Polar) adapter first, with
+  Stripe behind the same BillingProvider interface for buyers in supported countries.
+  Open: Polar's manual review of the Pro product (AI image/video flag), requested by the
+  owner today; Lemon Squeezy is the fallback if Polar declines it.
