@@ -113,5 +113,4 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
   deprecation warning.
 - 2026-11-08: npm: owner created npm org `ingotkit` (misspelled `ingokit` deleted) and
   published the placeholder from `setup/npm-placeholder/`. Registry lists `ingotkit` with
-  maintainer `uzairmirza`; version 0.0.1 was still processing (only `0.0.0-stage` visible)
-  at last check. IPO Pakistan search still to do, so the "Name checked" box stays open.
+  maintainer `uzairmirza`; 0.0.1 is `latest` (live 10:09 UTC after npm's processing step). IPO Pakistan search still to do, so the "Name checked" box stays open.
