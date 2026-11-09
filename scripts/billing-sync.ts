@@ -6,14 +6,14 @@ import { loadEnvConfig } from "@next/env";
 loadEnvConfig(process.cwd(), true);
 
 async function main(): Promise<void> {
-  const { getBillingProvider, getCatalog, getProviderByName, formatPrice } = await import("../src/lib/billing");
+  const { getCatalog, getSyncProvider, formatPrice } = await import("../src/lib/billing");
   const requested = process.argv[2];
-  const provider = requested ? getProviderByName(requested) : getBillingProvider();
+  const provider = getSyncProvider(requested);
   if (!provider) {
     console.error(
       requested
-        ? `"${requested}" is not configured. Check its settings in .env.local (see /setup).`
-        : "No payment provider is configured. Add POLAR_ACCESS_TOKEN and POLAR_WEBHOOK_SECRET (or Stripe keys) to .env.local.",
+        ? `"${requested}" has no API key. Add it to .env.local (see /setup).`
+        : "No payment provider API key found. Add POLAR_ACCESS_TOKEN (or STRIPE_SECRET_KEY) to .env.local. The webhook secret can come later.",
     );
     process.exit(1);
   }

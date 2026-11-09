@@ -36,9 +36,9 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
 - [x] `lib/credits`: append-only ledger — grant, reserve, commit, refund; idempotent
 - [x] Unit tests incl. concurrent reserves
 - [x] `lib/billing` BillingProvider interface + Stripe (and/or MoR) implementation
-- [ ] Credit packs, monthly plan that refills credits, customer portal
+- [x] Credit packs, monthly plan that refills credits, customer portal
 - [x] Signature-verified, idempotent webhook
-- [ ] **Gate:** a test purchase adds credits; replaying the webhook adds none
+- [x] **Gate:** a test purchase adds credits; replaying the webhook adds none
 
 ## Phase 4 — AI tools + jobs (~4 days, weeks 4–6)
 - [ ] `tools/registry.ts` + chat (streaming), text-to-image, image-to-video
@@ -176,3 +176,13 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
   tampered payloads), 11 Playwright tests (signed order.paid adds 100 credits, replay adds
   none, forged webhook gets 401). Not verified yet: a real Polar sandbox checkout, the
   customer portal, and `billing:sync` against Polar (needs the owner's sandbox token).
+- 2026-11-09: Phase 3 gate closed with real Polar sandbox payments (app on localhost:3001,
+  webhook through a Cloudflare quick tunnel). `billing:sync` created the 3 packs and the
+  plan, and a second run reported all unchanged. Starter pack checkout: signed order.paid
+  added 100 credits. Pro subscription checkout: order.paid (subscription_create) added 800.
+  Customer portal showed the active subscription and both paid orders. Redelivering a
+  processed order.paid from Polar returned 200 and added nothing (balance stayed 900, 2
+  ledger rows). Fixes from this run: `billing:sync` needs only the API key (the webhook is
+  created after the products), and the docs give Polar's real webhook settings (format Raw,
+  API version 2026-10). Note: localhost.run free tunnels dropped mid-test; cloudflared
+  quick tunnels were reliable once the trycloudflare API responded.

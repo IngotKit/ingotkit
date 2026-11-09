@@ -92,7 +92,7 @@ export const ENV_VARS = {
   GITHUB_CLIENT_SECRET: { feature: "github", required: false, schema: nonEmpty, help: "Same OAuth app as GITHUB_CLIENT_ID." },
 
   POLAR_ACCESS_TOKEN: { feature: "polar", required: false, schema: z.string().regex(/^polar_/, "must start with polar_"), help: "Polar → Settings → Developers → New token (sandbox.polar.sh for test mode). Scopes: products, checkouts, customer sessions." },
-  POLAR_WEBHOOK_SECRET: { feature: "polar", required: false, schema: nonEmpty, help: "Polar → Settings → Webhooks → add endpoint <APP_URL>/api/webhooks/polar (format: Standard Webhooks) → copy the secret." },
+  POLAR_WEBHOOK_SECRET: { feature: "polar", required: false, schema: nonEmpty, help: "Polar → Settings → Webhooks → add endpoint <APP_URL>/api/webhooks/polar (format: Raw, API version 2026-10, event order.paid) → copy the secret." },
   POLAR_SERVER: { feature: "polar", required: false, optionalInFeature: true, public: true, schema: z.enum(["sandbox", "production"], "must be sandbox or production"), help: "sandbox (test payments, default) or production (real money). Tokens differ per environment." },
 
   STRIPE_SECRET_KEY: { feature: "stripe", required: false, schema: z.string().regex(/^sk_/, "must start with sk_"), help: "Stripe Dashboard → Developers → API keys." },

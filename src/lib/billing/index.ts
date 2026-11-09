@@ -23,17 +23,39 @@ export function configuredProviders(): ProviderName[] {
 /** A specific provider, if its settings are complete (webhook routes use this). */
 export function getProviderByName(name: string): BillingProvider | null {
   if (!configuredProviders().includes(name as ProviderName)) return null;
+  return buildProvider(name as ProviderName);
+}
+
+/**
+ * The provider `npm run billing:sync` talks to. Syncing only needs the API key, so this works
+ * before the webhook exists (you create the webhook after the products). Prefers `name`, then
+ * the site.config.ts choice, then whichever provider has an API key.
+ */
+export function getSyncProvider(name?: string): BillingProvider | null {
+  const env = getEnv();
+  const hasKey = (n: ProviderName) => Boolean(n === "polar" ? env.POLAR_ACCESS_TOKEN : env.STRIPE_SECRET_KEY);
+  const choice = siteConfig.billing.provider;
+  const candidates: ProviderName[] = name
+    ? [name as ProviderName]
+    : choice === "auto"
+      ? ["polar", "stripe"]
+      : [choice];
+  const picked = candidates.find((n) => (n === "polar" || n === "stripe") && hasKey(n));
+  return picked ? buildProvider(picked) : null;
+}
+
+function buildProvider(name: ProviderName): BillingProvider {
   const env = getEnv();
   if (name === "polar") {
     return createPolarProvider({
       accessToken: env.POLAR_ACCESS_TOKEN!,
-      webhookSecret: env.POLAR_WEBHOOK_SECRET!,
+      webhookSecret: env.POLAR_WEBHOOK_SECRET ?? "",
       server: env.POLAR_SERVER === "production" ? "production" : "sandbox",
     });
   }
   return createStripeProvider({
     secretKey: env.STRIPE_SECRET_KEY!,
-    webhookSecret: env.STRIPE_WEBHOOK_SECRET!,
+    webhookSecret: env.STRIPE_WEBHOOK_SECRET ?? "",
     findCustomerId: async (userId) => {
       const [row] = await getDb()
         .select({ customerId: billingCustomer.customerId })

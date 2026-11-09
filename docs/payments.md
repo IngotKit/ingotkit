@@ -33,16 +33,30 @@ Check your provider's current acceptable use policy before launching.
 ## Set up Polar (test mode first)
 1. Sign in at **sandbox.polar.sh** (test mode; card `4242 4242 4242 4242`, any future date).
 2. **Settings → Developers → New token**: allow products, checkouts and customer sessions.
-   Put it in `POLAR_ACCESS_TOKEN`.
-3. **Settings → Webhooks → Add endpoint**: URL `<APP_URL>/api/webhooks/polar`, format
-   **Standard Webhooks**, events: at least `order.paid`. Put the secret in `POLAR_WEBHOOK_SECRET`.
-4. Keep `POLAR_SERVER=sandbox`.
-5. Run `npm run billing:sync` to create the packs and plan in Polar from `site.config.ts`.
-   Run it again whenever you change prices.
-6. Going live: repeat 2 to 5 at **polar.sh** with `POLAR_SERVER=production`.
+   Put it in `POLAR_ACCESS_TOKEN`. Keep `POLAR_SERVER=sandbox`.
+3. Run `npm run billing:sync` to create the packs and plan in Polar from `site.config.ts`.
+   It only needs the token, so you can run it before the webhook exists. Run it again
+   whenever you change prices; unchanged products are left alone.
+4. **Settings → Webhooks → Add Endpoint**: URL `<APP_URL>/api/webhooks/polar`, format **Raw**,
+   API version **2026-10** (the version IngotKit's Polar adapter is written for), events: at
+   least `order.paid` (ticking all is fine; others are logged and ignored). Put the secret
+   in `POLAR_WEBHOOK_SECRET`.
+5. Going live: repeat 2 to 4 at **polar.sh** with `POLAR_SERVER=production`.
 
-Polar can't reach `localhost`. To test webhooks locally, expose port 3000 with a tunnel and use
-the tunnel URL as the webhook endpoint (and as `APP_URL`).
+If a delivery fails (your app was down, say), open the webhook in Polar, find it under
+deliveries and redeliver it. Credits are granted once per order, so redelivering is safe.
+
+### Testing webhooks on your own computer
+Polar can't reach `localhost`, so expose your dev server with a temporary tunnel and use the
+tunnel URL for the webhook endpoint. Keep `APP_URL` as your localhost address; only Polar
+needs the tunnel. For example, with Cloudflare's free quick tunnel (no account needed):
+
+```bash
+cloudflared tunnel --url http://localhost:3000
+```
+
+It prints an `https://….trycloudflare.com` address. Quick-tunnel addresses change every time
+you restart the tunnel, so update the webhook URL in Polar when that happens.
 
 ## Set up Stripe
 1. **Developers → API keys**: secret key into `STRIPE_SECRET_KEY`.
