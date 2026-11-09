@@ -25,7 +25,15 @@ export type SiteConfig = {
   description: string;
   supportEmail: string;
   links: { github: string; docs: string };
+  /** ISO currency code for prices, lowercase (e.g. "usd"). */
   currency: string;
+  billing: {
+    /**
+     * Which payment provider takes payments. "auto" uses the first one configured:
+     * Polar (merchant of record, works for sellers in more countries), then Stripe.
+     */
+    provider: "auto" | "polar" | "stripe";
+  };
   /** Credits every new account starts with. 0 turns the free trial off. */
   signupCredits: number;
   creditPacks: CreditPack[];
@@ -45,6 +53,7 @@ export const siteConfig: SiteConfig = {
     docs: "https://github.com/IngotKit/ingotkit#readme",
   },
   currency: "usd",
+  billing: { provider: "auto" },
   signupCredits: 20,
   creditPacks: [
     { id: "starter", name: "Starter", credits: 100, priceCents: 500 },

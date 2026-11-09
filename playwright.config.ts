@@ -1,6 +1,7 @@
 import { defineConfig, devices } from "@playwright/test";
 
 import { ENV_KEYS } from "./src/lib/env";
+import { TEST_POLAR_WEBHOOK_SECRET } from "./tests/helpers/polar-webhooks";
 
 // Two production servers from the same `next build`:
 // - "configured" (E2E_PORT, default 3210) reads .env.local locally or the CI env;
@@ -40,8 +41,14 @@ export default defineConfig({
       url: `${baseURL}/api/auth/ok`,
       reuseExistingServer: false,
       timeout: 120_000,
-      // Auth links and trusted origins must match the port under test.
-      env: { APP_URL: baseURL },
+      // Auth links and trusted origins must match the port under test. Polar uses test-only
+      // values: tests sign webhooks with this secret, and the token is never used for real calls.
+      env: {
+        APP_URL: baseURL,
+        POLAR_ACCESS_TOKEN: "polar_e2e_not_a_real_token",
+        POLAR_WEBHOOK_SECRET: TEST_POLAR_WEBHOOK_SECRET,
+        POLAR_SERVER: "sandbox",
+      },
     },
     {
       command: `npx next start -p ${BARE_PORT}`,

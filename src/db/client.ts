@@ -6,6 +6,8 @@ import { getEnv } from "@/lib/env";
 import * as schema from "@/db/schema";
 
 export type Db = MySql2Database<typeof schema>;
+/** A database handle or an open transaction: functions that take this compose into transactions. */
+export type DbOrTx = Db | Parameters<Parameters<Db["transaction"]>[0]>[0];
 
 // Reuse one pool per process (and across dev hot reloads). Nothing connects at import time:
 // the pool is created on the first getDb() call, so a missing DATABASE_URL never crashes boot.

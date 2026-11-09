@@ -5,8 +5,10 @@ import { drizzleAdapter } from "better-auth/adapters/drizzle";
 import { nextCookies } from "better-auth/next-js";
 import { magicLink } from "better-auth/plugins/magic-link";
 
+import { siteConfig } from "@/config/site.config";
 import { getDb, type Db } from "@/db/client";
 import * as schema from "@/db/schema";
+import { grant } from "@/lib/credits";
 import { getEmailSender, sendEmail } from "@/lib/email";
 import { magicLinkTemplate, resetPasswordTemplate, verifyEmailTemplate } from "@/lib/email/templates";
 import { isFeatureReady, readEnv, type Env } from "@/lib/env";
@@ -58,6 +60,24 @@ export function createAuth({ db, env, emailEnabled, google, github }: AuthOption
     account: {
       // Signing in with Google/GitHub using an already verified email links to that account.
       accountLinking: { enabled: true, trustedProviders: ["google", "github"] },
+    },
+
+    databaseHooks: {
+      user: {
+        create: {
+          // Free starting credits from site.config.ts, granted once per user.
+          after: async (createdUser) => {
+            if (siteConfig.signupCredits > 0) {
+              await grant(db, {
+                userId: createdUser.id,
+                amount: siteConfig.signupCredits,
+                kind: "signup",
+                idempotencyKey: `signup:${createdUser.id}`,
+              });
+            }
+          },
+        },
+      },
     },
 
     // No Redis on Hostinger: rate-limit counters live in MySQL.

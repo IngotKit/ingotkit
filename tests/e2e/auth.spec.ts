@@ -1,5 +1,6 @@
-import { expect, test, type Page } from "@playwright/test";
+import { expect, test } from "@playwright/test";
 
+import { signInWithPassword, signUp } from "./helpers/auth";
 import { uniqueEmail, uniqueIp, waitForEmailLink } from "./helpers/mailpit";
 
 // Each test gets its own client IP so Better Auth's rate limiter (on, as in production)
@@ -7,25 +8,6 @@ import { uniqueEmail, uniqueIp, waitForEmailLink } from "./helpers/mailpit";
 test.beforeEach(async ({ context }) => {
   await context.setExtraHTTPHeaders({ "x-forwarded-for": uniqueIp() });
 });
-
-const PASSWORD = "correct-horse-battery-1";
-
-async function signUp(page: Page, email: string) {
-  await page.goto("/sign-up");
-  await page.getByLabel("Name").fill("Test User");
-  await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill(PASSWORD);
-  await page.getByRole("button", { name: "Create account" }).click();
-  await expect(page).toHaveURL(/\/verify-email\?email=/);
-  await expect(page.getByRole("heading", { name: "Check your email" })).toBeVisible();
-}
-
-async function signInWithPassword(page: Page, email: string, password = PASSWORD) {
-  await page.goto("/sign-in");
-  await page.getByLabel("Email").fill(email);
-  await page.getByLabel("Password").fill(password);
-  await page.getByRole("button", { name: "Sign in", exact: true }).click();
-}
 
 test("sign up, verify email, sign out, sign back in", async ({ page }) => {
   const email = uniqueEmail("signup");

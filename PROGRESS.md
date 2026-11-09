@@ -30,15 +30,15 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
 
 ## Payments check (by 2026-11-20)
 - [x] Decide which provider can onboard you and pay out in Pakistan (Stripe? Polar? Lemon Squeezy?)
-- [ ] If Stripe can't onboard you: build the merchant-of-record adapter first in Phase 3
+- [x] If Stripe can't onboard you: build the merchant-of-record adapter first in Phase 3
 
 ## Phase 3 — Billing + credits ledger (~3 days, weeks 2–4)
-- [ ] `lib/credits`: append-only ledger — grant, reserve, commit, refund; idempotent
-- [ ] Unit tests incl. concurrent reserves
-- [ ] `lib/billing` BillingProvider interface + Stripe (and/or MoR) implementation
-- [ ] Credit packs, monthly plan that refills credits, customer portal
-- [ ] Signature-verified, idempotent webhook
-- [ ] **Gate:** a test purchase adds credits; replaying the webhook adds none
+- [x] `lib/credits`: append-only ledger — grant, reserve, commit, refund; idempotent
+- [x] Unit tests incl. concurrent reserves
+- [x] `lib/billing` BillingProvider interface + Stripe (and/or MoR) implementation
+- [x] Credit packs, monthly plan that refills credits, customer portal
+- [x] Signature-verified, idempotent webhook
+- [x] **Gate:** a test purchase adds credits; replaying the webhook adds none
 
 ## Phase 4 — AI tools + jobs (~4 days, weeks 4–6)
 - [ ] `tools/registry.ts` + chat (streaming), text-to-image, image-to-video
@@ -50,7 +50,7 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
 - [ ] Gallery (list, download, delete; optional R2)
 - [ ] Admin: users, credit adjustments, failed jobs, revenue
 - [ ] Landing + pricing pages from `site.config.ts`
-- [ ] **Gate:** `npm run e2e` passes signup → buy → generate → gallery (Stripe test mode, mocked media)
+- [ ] **Gate:** `npm run e2e` passes signup → buy → generate → gallery (Polar sandbox or signed test webhooks, mocked media)
 
 ## Phase 6 — Hostinger hardening (~2 days, week 8)
 - [ ] Build/start commands, `engines`, `$PORT`, migration on deploy, hPanel cron
@@ -162,3 +162,27 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
   Stripe behind the same BillingProvider interface for buyers in supported countries.
   Open: Polar's manual review of the Pro product (AI image/video flag), requested by the
   owner today; Lemon Squeezy is the fallback if Polar declines it.
+- 2026-11-08: Phase 5 gate wording changed with the owner's approval: the money-path e2e uses
+  Polar sandbox (or signed test webhooks) instead of Stripe test mode. Monthly plan credits
+  carry over (owner approved).
+- 2026-11-08: Phase 3 built on branch `phase-3-billing`: credit_ledger (append-only,
+  idempotency keys, reserve locks the user row), lib/credits (grant, reserve, commit,
+  refund, getBalance), signup credits via a Better Auth hook, BillingProvider with Polar
+  (@polar-sh/sdk 1.0.2, API 2026-10) and Stripe (23.1.0) adapters, /api/webhooks/[provider]
+  (signature check, webhook_event log, one transaction), `npm run billing:sync`, /billing
+  and /billing/success pages, balance on the dashboard, docs/payments.md. Verified locally:
+  typecheck, lint, 51 Vitest tests (9 ledger tests on MySQL incl. 20 concurrent reserves:
+  exactly 10 succeed, balance ends at 0; webhook tests for both providers incl. forged and
+  tampered payloads), 11 Playwright tests (signed order.paid adds 100 credits, replay adds
+  none, forged webhook gets 401). Not verified yet: a real Polar sandbox checkout, the
+  customer portal, and `billing:sync` against Polar (needs the owner's sandbox token).
+- 2026-11-09: Phase 3 gate closed with real Polar sandbox payments (app on localhost:3001,
+  webhook through a Cloudflare quick tunnel). `billing:sync` created the 3 packs and the
+  plan, and a second run reported all unchanged. Starter pack checkout: signed order.paid
+  added 100 credits. Pro subscription checkout: order.paid (subscription_create) added 800.
+  Customer portal showed the active subscription and both paid orders. Redelivering a
+  processed order.paid from Polar returned 200 and added nothing (balance stayed 900, 2
+  ledger rows). Fixes from this run: `billing:sync` needs only the API key (the webhook is
+  created after the products), and the docs give Polar's real webhook settings (format Raw,
+  API version 2026-10). Note: localhost.run free tunnels dropped mid-test; cloudflared
+  quick tunnels were reliable once the trycloudflare API responded.

@@ -24,9 +24,14 @@ npm run dev
 - Google and GitHub sign-in buttons appear once their keys are in `.env.local`
   (callback URLs: `http://localhost:3000/api/auth/callback/google` and `.../github`).
 
+## Payments
+
+Credit packs and a monthly plan, paid through Polar (default) or Stripe. Setup steps, how the
+credits ledger works, and provider notes: [`docs/payments.md`](docs/payments.md).
+
 ## Checks
 
 ```bash
-npm run typecheck && npm run lint && npm test
+npm run typecheck && npm run lint && npm test   # unit + MySQL integration tests
 npm run e2e   # production build + Playwright; needs the Docker services running
 ```
