@@ -64,11 +64,13 @@ describe("readEnv", () => {
 
 describe("isFeatureReady", () => {
   it("is true only when every variable of the feature is valid", () => {
-    const partial = readEnv({ ...validCore, ANTHROPIC_API_KEY: "sk-ant-test" });
+    const partial = readEnv({ ...validCore, HIGGSFIELD_API_KEY_ID: "id" });
     expect(isFeatureReady("core", partial)).toBe(true);
-    expect(isFeatureReady("ai", partial)).toBe(false);
+    expect(isFeatureReady("media", partial)).toBe(false);
 
-    const full = readEnv({ ...validCore, ANTHROPIC_API_KEY: "a", OPENAI_API_KEY: "b" });
-    expect(isFeatureReady("ai", full)).toBe(true);
+    const full = readEnv({ ...validCore, HIGGSFIELD_API_KEY_ID: "id", HIGGSFIELD_API_KEY_SECRET: "secret" });
+    expect(isFeatureReady("media", full)).toBe(true);
+    expect(isFeatureReady("anthropic", readEnv({ ...validCore, ANTHROPIC_API_KEY: "a" }))).toBe(true);
+    expect(isFeatureReady("openai", readEnv({ ...validCore, ANTHROPIC_API_KEY: "a" }))).toBe(false);
   });
 });

@@ -7,6 +7,7 @@ import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
 import { buttonVariants } from "@/components/ui/button";
 import { siteConfig } from "@/config/site.config";
+import { isFakeMediaEnabled } from "@/lib/ai/media";
 import { readEnv } from "@/lib/env";
 import {
   checkDatabase,
@@ -65,6 +66,16 @@ async function SetupStatus() {
             {report.coreReady
               ? "Core settings are in place. Finish the database step below."
               : "Add the missing Core settings below. The app shows this page until they are set."}
+          </AlertDescription>
+        </Alert>
+      )}
+
+      {isFakeMediaEnabled() && (
+        <Alert variant="destructive">
+          <AlertTitle>Test media provider is on</AlertTitle>
+          <AlertDescription>
+            FAKE_MEDIA_PROVIDER=1 replaces Higgsfield with placeholder images for automated tests. Remove it before
+            real users sign up, or they will pay credits for placeholders.
           </AlertDescription>
         </Alert>
       )}
