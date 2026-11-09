@@ -40,6 +40,16 @@ export type SiteConfig = {
   plans: Plan[];
   /** Default cost per generation. A tool's own config can override its entry. */
   creditCosts: { chatMessage: number; image: number; video: number };
+  ai: {
+    /** Which text AI the chat tool uses. "auto" uses Anthropic if configured, else OpenAI. */
+    textProvider: "auto" | "anthropic" | "openai";
+  };
+  jobs: {
+    /** How many image/video generations one user can have running at once. */
+    maxActivePerUser: number;
+    /** A generation still unfinished after this long is marked failed and refunded. */
+    timeoutMinutes: number;
+  };
 };
 
 export const siteConfig: SiteConfig = {
@@ -70,4 +80,6 @@ export const siteConfig: SiteConfig = {
     },
   ],
   creditCosts: { chatMessage: 1, image: 5, video: 25 },
+  ai: { textProvider: "auto" },
+  jobs: { maxActivePerUser: 3, timeoutMinutes: 60 },
 };

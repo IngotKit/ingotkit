@@ -186,3 +186,19 @@ Target: v1 by 2027-01-03, public launch week of 2027-01-11. Budget ~15 h/week.
   created after the products), and the docs give Polar's real webhook settings (format Raw,
   API version 2026-10). Note: localhost.run free tunnels dropped mid-test; cloudflared
   quick tunnels were reliable once the trycloudflare API responded.
+- 2026-11-09: Phase 4 built on branch `phase-4-ai-tools`: `job` table (migration 0002),
+  lib/jobs (reserve on start, settle once with a conditional UPDATE + commit/refund in one
+  transaction, per-job check throttle, cron poll with a 60-minute timeout), MediaProvider
+  interface with a fetch-based Higgsfield adapter (submit with hf_webhook, status, presigned
+  upload, Standard Webhooks check; the webhook only says which job to re-check) and a
+  test-only fake provider (FAKE_MEDIA_PROVIDER=1, warned on /setup and tool pages),
+  tools/registry.ts with chat (AI SDK 7 streaming; Anthropic default claude-opus-5-5, OpenAI
+  fallback), image (Z-Image Turbo) and image-to-video (Wan 2.6, upload or pick a made
+  image), /tools/[id] pages, /api/tools/[id], /api/jobs (checks unfinished jobs while the page
+  is open), /api/webhooks/higgsfield, /api/cron/poll-jobs (Bearer CRON_SECRET),
+  docs/ai-tools.md. Verified locally: typecheck, lint, 73 Vitest tests (8 new job tests on
+  MySQL incl. webhook/check races settling once, provider refusal refunds at once, timeout
+  refunds), 16 Playwright tests with the fake provider (image charges 5, a [fail] job
+  refunds, made image to video, cron route needs the secret). Not verified yet: real chat
+  with an Anthropic key, real Higgsfield image and video, a real Higgsfield webhook, and
+  Higgsfield prices against creditCosts (needs the owner's keys and a small top-up).
