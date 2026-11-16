@@ -12,7 +12,7 @@ export type RouteInput = {
 export type RouteDecision = { type: "next" } | { type: "redirect"; to: string };
 
 /** Paths that need a signed-in user. */
-export const PROTECTED_PREFIXES = ["/dashboard", "/billing"];
+export const PROTECTED_PREFIXES = ["/dashboard", "/billing", "/tools"];
 
 function matchesPrefix(pathname: string, prefix: string): boolean {
   return pathname === prefix || pathname.startsWith(`${prefix}/`);

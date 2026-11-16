@@ -37,8 +37,9 @@ describe("decideRoute", () => {
     expect(decideRoute({ ...base, pathname: "/dashboards" })).toEqual({ type: "next" });
   });
 
-  it("protects /billing too", () => {
+  it("protects /billing and the tools too", () => {
     expect(decideRoute({ ...base, pathname: "/billing" })).toEqual({ type: "redirect", to: "/sign-in?next=%2Fbilling" });
+    expect(decideRoute({ ...base, pathname: "/tools/image" })).toEqual({ type: "redirect", to: "/sign-in?next=%2Ftools%2Fimage" });
   });
 
   it("lets visitors with a session cookie through", () => {

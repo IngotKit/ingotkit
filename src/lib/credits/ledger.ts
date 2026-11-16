@@ -114,7 +114,7 @@ export async function reserve(
   });
 }
 
-async function findReservation(db: Db, jobId: string) {
+async function findReservation(db: DbOrTx, jobId: string) {
   const [row] = await db
     .select({ userId: creditLedger.userId, amount: creditLedger.amount })
     .from(creditLedger)
@@ -127,7 +127,7 @@ async function findReservation(db: Db, jobId: string) {
  * Finalises a successful job. If it cost less than reserved (`actualAmount`), the difference
  * goes back to the user. Returns false if the job was already committed or refunded.
  */
-export async function commit(db: Db, input: { jobId: string; actualAmount?: number }): Promise<{ applied: boolean }> {
+export async function commit(db: DbOrTx, input: { jobId: string; actualAmount?: number }): Promise<{ applied: boolean }> {
   const { userId, reserved } = await findReservation(db, input.jobId);
   const actual = Math.min(Math.max(input.actualAmount ?? reserved, 0), reserved);
   const applied = await append(db, {
@@ -141,7 +141,7 @@ export async function commit(db: Db, input: { jobId: string; actualAmount?: numb
 }
 
 /** Returns a failed job's whole reservation. Returns false if the job was already settled. */
-export async function refund(db: Db, input: { jobId: string; note?: string }): Promise<{ applied: boolean }> {
+export async function refund(db: DbOrTx, input: { jobId: string; note?: string }): Promise<{ applied: boolean }> {
   const { userId, reserved } = await findReservation(db, input.jobId);
   const applied = await append(db, {
     userId,

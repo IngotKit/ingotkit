@@ -29,6 +29,13 @@ npm run dev
 Credit packs and a monthly plan, paid through Polar (default) or Stripe. Setup steps, how the
 credits ledger works, and provider notes: [`docs/payments.md`](docs/payments.md).
 
+## AI tools
+
+AI chat (Anthropic or OpenAI), an image generator and image-to-video (Higgsfield), each paid
+for with credits. Long generations finish by webhook, by checks while the page is open, or by
+an hPanel cron job; failed ones are refunded. Setup, cron and how to add your own tool:
+[`docs/ai-tools.md`](docs/ai-tools.md).
+
 ## Checks
 
 ```bash

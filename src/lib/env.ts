@@ -10,7 +10,8 @@ export type Feature =
   | "github"
   | "polar"
   | "stripe"
-  | "ai"
+  | "anthropic"
+  | "openai"
   | "media"
   | "storage"
   | "jobs";
@@ -34,8 +35,12 @@ export const FEATURES: Record<Feature, { label: string; enables: string }> = {
     label: "Payments: Stripe",
     enables: "Credit packs and the monthly plan through Stripe (for sellers in Stripe-supported countries).",
   },
-  ai: { label: "Text AI", enables: "The AI chat tool." },
-  media: { label: "Image and video AI", enables: "The image and video tools (Higgsfield)." },
+  anthropic: { label: "Text AI: Anthropic", enables: "The AI chat tool, using Claude." },
+  openai: { label: "Text AI: OpenAI", enables: "The AI chat tool, using OpenAI (if Anthropic isn't set up)." },
+  media: {
+    label: "Image and video AI",
+    enables: "The image and image-to-video tools (Higgsfield). Results come back by webhook, or by checking while the page is open, or by the cron job.",
+  },
   storage: {
     label: "Media storage (S3 / R2)",
     enables: "Keeps generated media permanently. Without it, provider URLs are stored and may expire.",
@@ -98,11 +103,14 @@ export const ENV_VARS = {
   STRIPE_SECRET_KEY: { feature: "stripe", required: false, schema: z.string().regex(/^sk_/, "must start with sk_"), help: "Stripe Dashboard → Developers → API keys." },
   STRIPE_WEBHOOK_SECRET: { feature: "stripe", required: false, schema: z.string().regex(/^whsec_/, "must start with whsec_"), help: "Stripe Dashboard → Developers → Webhooks → endpoint <APP_URL>/api/webhooks/stripe. Events: checkout.session.completed, invoice.paid." },
 
-  ANTHROPIC_API_KEY: { feature: "ai", required: false, schema: nonEmpty, help: "console.anthropic.com → API keys." },
-  OPENAI_API_KEY: { feature: "ai", required: false, schema: nonEmpty, help: "platform.openai.com → API keys." },
+  ANTHROPIC_API_KEY: { feature: "anthropic", required: false, schema: nonEmpty, help: "console.anthropic.com → Settings → API keys." },
+  OPENAI_API_KEY: { feature: "openai", required: false, schema: nonEmpty, help: "platform.openai.com → API keys." },
 
-  HIGGSFIELD_API_KEY_ID: { feature: "media", required: false, schema: nonEmpty, help: "Higgsfield dashboard → API keys (key ID)." },
-  HIGGSFIELD_API_KEY_SECRET: { feature: "media", required: false, schema: nonEmpty, help: "Higgsfield dashboard → API keys (key secret)." },
+  HIGGSFIELD_API_KEY_ID: { feature: "media", required: false, schema: nonEmpty, help: "console.higgsfield.ai → API keys (the key ID)." },
+  HIGGSFIELD_API_KEY_SECRET: { feature: "media", required: false, schema: nonEmpty, help: "console.higgsfield.ai → API keys (the key secret, shown once)." },
+  HIGGSFIELD_WEBHOOK_SECRET: { feature: "media", required: false, optionalInFeature: true, schema: z.string().regex(/^whsec_/, "must start with whsec_"), help: "console.higgsfield.ai → Settings → webhook signing secret. Recommended: without it, webhooks are unsigned (the app still re-checks every result with Higgsfield)." },
+  WEBHOOK_BASE_URL: { feature: "media", required: false, optionalInFeature: true, public: true, schema: z.url().regex(/^https:\/\//, "must start with https://"), help: "Only if APP_URL isn't reachable from the internet (local testing through a tunnel): the public https address providers send webhooks to. Defaults to APP_URL." },
+  FAKE_MEDIA_PROVIDER: { feature: "media", required: false, optionalInFeature: true, public: true, schema: z.enum(["0", "1"], "must be 0 or 1"), help: "Automated tests only: 1 replaces Higgsfield with a fake that returns placeholder images for free. Never set it on a live site." },
 
   S3_ENDPOINT: { feature: "storage", required: false, public: true, schema: url, help: "Cloudflare R2 → bucket → S3 API endpoint." },
   S3_BUCKET: { feature: "storage", required: false, public: true, schema: nonEmpty, help: "Bucket name." },

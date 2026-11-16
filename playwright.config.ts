@@ -12,6 +12,9 @@ const BARE_PORT = PORT + 1;
 const baseURL = `http://localhost:${PORT}`;
 const bareURL = `http://localhost:${BARE_PORT}`;
 
+/** Test-only value; the cron route test sends it. */
+export const E2E_CRON_SECRET = "e2e-cron-secret-not-a-real-one";
+
 const blankEnv = Object.fromEntries(ENV_KEYS.map((key) => [key, ""]));
 
 export default defineConfig({
@@ -43,11 +46,16 @@ export default defineConfig({
       timeout: 120_000,
       // Auth links and trusted origins must match the port under test. Polar uses test-only
       // values: tests sign webhooks with this secret, and the token is never used for real calls.
+      // WEBHOOK_BASE_URL is blanked so jobs finish by status checks, as on plain-http localhost.
       env: {
         APP_URL: baseURL,
         POLAR_ACCESS_TOKEN: "polar_e2e_not_a_real_token",
         POLAR_WEBHOOK_SECRET: TEST_POLAR_WEBHOOK_SECRET,
         POLAR_SERVER: "sandbox",
+        // Image/video tools use the free test provider: no Higgsfield calls, deterministic results.
+        FAKE_MEDIA_PROVIDER: "1",
+        WEBHOOK_BASE_URL: "",
+        CRON_SECRET: E2E_CRON_SECRET,
       },
     },
     {

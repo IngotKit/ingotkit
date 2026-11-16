@@ -56,7 +56,18 @@ export function describeFeatures(report: EnvReport): FeatureStatus[] {
   });
 }
 
-export const AUTH_TABLES = ["user", "session", "account", "verification", "rate_limit"] as const;
+/** Tables the migrations create. If any is missing, /setup asks for `npm run db:migrate`. */
+export const REQUIRED_TABLES = [
+  "user",
+  "session",
+  "account",
+  "verification",
+  "rate_limit",
+  "credit_ledger",
+  "webhook_event",
+  "billing_customer",
+  "job",
+] as const;
 
 export type DatabaseStatus =
   | { state: "not-configured" }
@@ -75,7 +86,7 @@ export async function checkDatabase(report: EnvReport): Promise<DatabaseStatus> 
         (row) => row.name ?? row.NAME ?? row.TABLE_NAME ?? "",
       ),
     );
-    const missingTables = AUTH_TABLES.filter((table) => !existing.has(table));
+    const missingTables = REQUIRED_TABLES.filter((table) => !existing.has(table));
     return missingTables.length ? { state: "needs-migration", missingTables } : { state: "ready" };
   } catch (error) {
     const err = error as { code?: string; message?: string };
